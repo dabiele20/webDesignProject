@@ -38,10 +38,8 @@
 
     //echo $mysqli->host_info . "\n";
 
-    $query = "SELECT Nome, Materia FROM File";
+    $query = "SELECT * FROM File ";
 
-    $scelte = "";
-    $check1 = "";
     $check2 = "";
     $check3 = "";
     $check4 = "";
@@ -51,7 +49,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
+            <a class="navbar-brand" href="#">Ordina e filtra i contenuti:</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -65,22 +63,22 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Ordina per: <?php echo $scelte ?>
+                            Ordina per: <?php echo $_GET['radiocheck'] ?>
                         </a>
                         
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <form method="post">
+                        <form method="get">
                             <li><b class="dropdown-item-text font-weight-bold">Data:</b></li>
                             <li>
                                 <div class="container">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radio" id="dropdownCheck" value="dal piu recente" <? echo $check1; ?> >
+                                        <input class="form-check-input" type="radio" name="radiocheck" id="radiocheck" onClick="submit();" value="dal piu recente">
                                         <label class="form-check-label" for="flexRadioDefault1">
                                             dal più recente
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radio" id="dropdownCheck2" value="dal meno recente" <? echo $check2;?>>
+                                        <input class="form-check-input" type="radio" name="radiocheck" id="radiocheck" onClick="submit();" value="dal meno recente" >
                                         <label class="form-check-label" for="flexRadioDefault2">
                                             dal meno recente
                                         </label>
@@ -94,36 +92,40 @@
                             <li>
                                 <div class="container">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radio" id="dropdownCheck3" value="daAaZ" <? echo $check3; ?>>
+                                        <input class="form-check-input" type="radio" name="radiocheck" id="radiocheck" onClick="submit();" value="daAaZ" >
                                         <label class="form-check-label" for="flexRadioDefault3">
                                             dalla A alla Z
                                         </label>
                                     </div>
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radio" id="dropdownCheck4" value="daZaA" <? echo $check4; ?>>
+                                        <input class="form-check-input" type="radio" name="radiocheck" id="radiocheck" onClick="submit();" value="daZaA">
                                         <label class="form-check-label" for="flexRadioDefault4">
                                             dalla Z alla A
                                         </label>
                                     </div>
                                 </div>
                             </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <div class="container">
-                                <button type="submit" name="invia" class="btn btn-primary">Invia</button>
-                                </div>
-                            </li>
                             </form>
+
                             <?php 
-                            if(isset($_POST['invia'])) {
-                                $valore = $_POST['radio'];
-                                if ($valore == 'dal piu recente') {
-                                    $check1 = 'checked';
+                            if(isset($_GET['radiocheck'])) {
+                                if($_GET['radiocheck'] == 'dal piu recente') {
+                                    $query .= "ORDER BY DataCreazione ASC";
+                                    $check1 = "checked";
                                 }
+                                if($_GET['radiocheck'] == 'dal meno recente') {
+                                    $query .= "ORDER BY DataCreazione DESC";
+                                }
+                                if($_GET['radiocheck'] == 'daAaZ') {
+                                    $query .= "ORDER BY Nome ASC";
+                                }
+                                if($_GET['radiocheck'] == 'daZaA') {
+                                    $query .= "ORDER BY Nome DESC";
+                                }
+                                $scelte = $_get['radiocheck'];
                             }
                             ?>
+
                         </ul>
  
                     </li>
@@ -136,13 +138,20 @@
         </div>
     </nav>
 
+    <!-- <div class="container">
+        <select name="fetchval" id="fetchval">
+            <option value="dal più recente">dal più recente</option>
+            <option value="dal meno recente">dal meno recente</option>
+        </select>
+    </div> -->
+
 
     <div class="container no1">
         <?php
 
         $result = $mysqli->query($query);
 
-        if ($result = mysqli_query($mysqli, "SELECT * FROM File")) {
+        if ($result = mysqli_query($mysqli, $query)) {
             //echo "Le righe sono: " . mysqli_num_rows($result) . "\n";
 
             $count = 0;
@@ -211,9 +220,18 @@
 
 
 
-    <!-- Optional JavaScript; choose one of the two! -->
+    <!-- Optional JavaScript; choose one of the two! 
+    <script type="text/javascript">
+        $(document).ready(function() {
+                $("#fetchval").on('change', function() {
+                    var value = $(this).val();
+                    alert(value);
+                })
+            }
+        );
+    </script>
 
-    <!-- Option 1: Bootstrap Bundle with Popper -->
+     Option 1: Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 
     <!-- Option 2: Separate Popper and Bootstrap JS -->
