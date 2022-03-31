@@ -44,6 +44,16 @@
     $check3 = "";
     $check4 = "";
 
+    $radio = test_input($_POST["radiocheck"]);
+
+    function test_input($data)
+    {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
+
 
     ?>
 
@@ -63,80 +73,157 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Ordina per: <?php echo $_GET['radiocheck'] ?>
+                            Ordina per: <?php echo $_POST['radiocheck'] ?>
                         </a>
-                        
+
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <form method="get">
-                            <li><b class="dropdown-item-text font-weight-bold">Data:</b></li>
-                            <li>
-                                <div class="container">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radiocheck" id="radiocheck" onClick="submit();" value="dal piu recente">
-                                        <label class="form-check-label" for="flexRadioDefault1">
-                                            dal più recente
-                                        </label>
+                            <form method="post">
+                                <li><b class="dropdown-item-text font-weight-bold">Data:</b></li>
+                                <li>
+                                    <div class="container">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="radiocheck" id="radiocheck" onClick="submit();" <?php if (isset($radio) && $radio == "dal piu recente") echo "checked"; ?> value="dal piu recente">
+                                            <label class="form-check-label" for="flexRadioDefault1">
+                                                dal più recente
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="radiocheck" id="radiocheck" onClick="submit();" <?php if (isset($radio) && $radio == "dal meno recente") echo "checked"; ?> value="dal meno recente">
+                                            <label class="form-check-label" for="flexRadioDefault2">
+                                                dal meno recente
+                                            </label>
+                                        </div>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radiocheck" id="radiocheck" onClick="submit();" value="dal meno recente" >
-                                        <label class="form-check-label" for="flexRadioDefault2">
-                                            dal meno recente
-                                        </label>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><b class="dropdown-item-text">Lettere:</b></li>
+                                <li>
+                                    <div class="container">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="radiocheck" id="radiocheck" onClick="submit();" <?php if (isset($radio) && $radio == "daAaZ") echo "checked"; ?> value="daAaZ">
+                                            <label class="form-check-label" for="flexRadioDefault3">
+                                                dalla A alla Z
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="radiocheck" id="radiocheck" onClick="submit();" <?php if (isset($radio) && $radio == "daZaA") echo "checked"; ?> value="daZaA">
+                                            <label class="form-check-label" for="flexRadioDefault4">
+                                                dalla Z alla A
+                                            </label>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><b class="dropdown-item-text">Lettere:</b></li>
-                            <li>
-                                <div class="container">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radiocheck" id="radiocheck" onClick="submit();" value="daAaZ" >
-                                        <label class="form-check-label" for="flexRadioDefault3">
-                                            dalla A alla Z
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="radiocheck" id="radiocheck" onClick="submit();" value="daZaA">
-                                        <label class="form-check-label" for="flexRadioDefault4">
-                                            dalla Z alla A
-                                        </label>
-                                    </div>
-                                </div>
-                            </li>
+                                </li>
                             </form>
 
-                            <?php 
-                            if(isset($_GET['radiocheck'])) {
-                                if($_GET['radiocheck'] == 'dal piu recente') {
+                            <?php
+                            if (isset($_POST['radiocheck'])) {
+                                if ($_POST['radiocheck'] == 'dal piu recente') {
                                     $query .= "ORDER BY DataCreazione ASC";
-                                    $check1 = "checked";
                                 }
-                                if($_GET['radiocheck'] == 'dal meno recente') {
+                                if ($_POST['radiocheck'] == 'dal meno recente') {
                                     $query .= "ORDER BY DataCreazione DESC";
                                 }
-                                if($_GET['radiocheck'] == 'daAaZ') {
+                                if ($_POST['radiocheck'] == 'daAaZ') {
                                     $query .= "ORDER BY Nome ASC";
                                 }
-                                if($_GET['radiocheck'] == 'daZaA') {
+                                if ($_POST['radiocheck'] == 'daZaA') {
                                     $query .= "ORDER BY Nome DESC";
                                 }
-                                $scelte = $_get['radiocheck'];
                             }
                             ?>
 
                         </ul>
- 
+
                     </li>
-                </ul>
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Ricerca per titolo" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit"><? echo $valore ?></button>
-                </form>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Materia:
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <div class="container">
+                                <?php
+                                $materie_query = "SELECT DISTINCT Materia FROM File";
+                                $radioMaterie = test_input($_POST["radioMaterie"]);
+                                $outputMaterie = '<form method="post"><li>';
+
+                                $materie_array = array();
+
+                                if ($result = mysqli_query($mysqli, $materie_query)) {
+                                    //echo "Le righe sono: " . mysqli_num_rows($result) . "\n";
+
+                                    while ($row = mysqli_fetch_assoc($result)) {
+
+                                        array_push($materie_array, $row["Materie"]);
+
+                                        $outputMaterie .= '<div class="form-check">';
+                                        $outputMaterie .= '<input class="form-check-input" type="radio" name="radioMaterie" id="radioMateria" onClick="submit();" ';
+                                        if (isset($radioMaterie) && $radioMaterie == $row['Materia']){
+                                            $outputMaterie .= "checked ";
+                                        }
+                                        $outputMaterie .= 'value="' . $row['Materia'] . '">';
+                                        $outputMaterie .= '<label class="form-check-label" for="flexRadioDefault1">';
+                                        $outputMaterie .= $row['Materia'];
+                                        $outputMaterie .= '</label></div>';
+                                    }
+                                    echo $outputMaterie . "</div></form></li>";
+                                }
+                                ?>
+                                <?php
+                                if (isset($_POST['radioMaterie'])) {
+                                    $query .= ' WHERE ';
+                                    if ($result = mysqli_query($mysqli, $materie_query)) {
+
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        if ($_POST['radioMaterie'] == $row['Materia']) {
+                                            $query .= " Materia = '" . $row['Materia'] . "'";
+                                        }
+                                    }
+                                }
+                            }
+                                ?>
+                            </div>
             </div>
+            </ul>
+            </li>
+            </ul>
+
+            <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Ricerca per titolo" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit"><? echo $valore ?></button>
+            </form>
+        </div>
         </div>
     </nav>
+
+    <!-- 
+        Codice per debug filtro materie
+
+                            
+    <div class="container">
+        <p>
+            <?php
+            $materie_query = "SELECT DISTINCT Materia FROM File";
+            $radioMaterie = test_input($_POST["radioMaterie"]);
+            //$outputMaterie = '<form method="post"><li>';
+
+            if ($result = mysqli_query($mysqli, $materie_query)) {
+                //echo "Le righe sono: " . mysqli_num_rows($result) . "\n";
+
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo 'ciao';
+                    $outputMaterie .= $row['Materia'];
+                }
+                echo $outputHTML; //. "</div></form></li>";
+            }
+            ?>
+
+        </p>
+
+    </div>
+
+                            -->
 
     <!-- <div class="container">
         <select name="fetchval" id="fetchval">
@@ -148,6 +235,8 @@
 
     <div class="container no1">
         <?php
+
+        echo $query;
 
         $result = $mysqli->query($query);
 
